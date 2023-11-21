@@ -22,13 +22,13 @@ export const Banner = ({
   const restore = useMutation(api.documents.restore);
 
   const onRemove = () => {
-    console.log("🚀 ~ file: banner.tsx:26 ~ onRemove ~ documentId:", documentId)
-    const document = useQuery(api.documents.getById, {
-      documentId: documentId
-    })
+    // console.log("🚀 ~ file: banner.tsx:26 ~ onRemove ~ documentId:", documentId)
+    // const document = useQuery(api.documents.getById, {
+    //   documentId: documentId
+    // })
 
-    console.log("🚀 ~ file: banner.tsx:30 ~ onRemove ~ document:", document, typeof document)
-    return
+    // // console.log("🚀 ~ file: banner.tsx:30 ~ onRemove ~ document:", document, typeof document)
+    // return
     // coverImage
 
     // if (url) {
