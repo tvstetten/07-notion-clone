@@ -1,12 +1,21 @@
+function withOpacity(variableName: string) {
+  return ({ opacityValue }: { opacityValue: string | undefined }) => {
+    if (opacityValue !== undefined) {
+      return `rgba(var(${variableName}), ${opacityValue})`;
+    }
+    return `rgb(var(${variableName}))`;
+  };
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -17,38 +26,62 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "var(--secondary)",
+          foreground: "var(--secondary-foreground)",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "var(--destructive)",
+          foreground: "var(--destructive-foreground)",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "var(--accent)",
+          foreground: "var(--accent-foreground)",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
+        },
+        tree: {
+          DEFAULT: "var(--tree)",
+          foreground: "var(--tree-foreground)",
+        },
+        treeSelected: {
+          DEFAULT: "var(--tree-selected)",
+          foreground: "var(--tree-selected-foreground)",
+        },
+        treeHover: {
+          DEFAULT: "var(--tree-hover)",
+          foreground: "var(--tree-hover-foreground)",
+        },
+        treeButton: {
+          DEFAULT: "var(--tree-button)",
+          foreground: "var(--tree-button-foreground)",
+        },
+        treeButtonParentHover: {
+          DEFAULT: "var(--tree-button-hover-parent)",
+          foreground: "var(--tree-button-hover-parent-foreground)",
+        },
+        treeButtonHover: {
+          DEFAULT: "var(--tree-button-hover)",
+          foreground: "var(--tree-button-hover-foreground)",
         },
       },
       borderRadius: {
@@ -70,7 +103,10 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      // shadow: {
+      //   "popup-menu": "shadow-[0_10px_20px_rgba(0,_0,_0,_0.7)]",
+      // },
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

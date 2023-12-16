@@ -39,20 +39,17 @@ export const TrashBox = () => {
     toast.promise(promise, {
       loading: "Restoring note...",
       success: "Note restored!",
-      error: " Failed to restore note."
+      error: " Failed to restore note.",
     });
   };
 
-  const onRemove = (
-    documentId: Id<"documents">,
-  ) => {
-
+  const onRemove = (documentId: Id<"documents">) => {
     const promise = remove({ id: documentId });
 
     toast.promise(promise, {
       loading: "Deleting note...",
       success: "Note deleted!",
-      error: " Failed to delete note."
+      error: " Failed to delete note.",
     });
 
     if (params.documentId === documentId) {
@@ -62,25 +59,25 @@ export const TrashBox = () => {
 
   if (documents === undefined) {
     return (
-      <div className="h-full flex items-center justify-center p-4">
+      <div className="flex h-full items-center justify-center p-4">
         <Spinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="text-sm">
+    <div className="z-[999999] text-sm">
       <div className="flex items-center gap-x-1 p-2">
         <Search className="h-4 w-4" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-7 px-2 focus-visible:ring-transparent bg-secondary"
+          className="h-7 bg-secondary px-2 focus-visible:ring-transparent"
           placeholder="Filter by page title..."
         />
       </div>
       <div className="mt-2 px-1 pb-1">
-        <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
+        <p className="hidden pb-2 text-center text-xs text-muted-foreground last:block">
           No documents found.
         </p>
         {filteredDocuments?.map((document) => (
@@ -88,11 +85,9 @@ export const TrashBox = () => {
             key={document._id}
             role="button"
             onClick={() => onClick(document._id)}
-            className="text-sm rounded-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between"
+            className="hover:bg-primary/5 flex w-full items-center justify-between rounded-sm text-sm text-primary"
           >
-            <span className="truncate pl-2">
-              {document.title}
-            </span>
+            <span className="truncate pl-2">{document.title}</span>
             <div className="flex items-center">
               <div
                 onClick={(e) => onRestore(e, document._id)}
