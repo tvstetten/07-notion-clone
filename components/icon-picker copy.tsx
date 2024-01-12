@@ -1,7 +1,6 @@
 "use client";
 
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 import { useTheme } from "next-themes";
 
 import {
@@ -10,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { PopoverClose } from "@radix-ui/react-popover";
+import { Button } from "./ui/button";
 import { cn, CO_POPUP_MENU_SHADOW } from "@/lib/utils";
 
 interface IconPickerProps {
@@ -32,13 +32,15 @@ export const IconPicker = ({
   title,
 }: IconPickerProps) => {
   const { resolvedTheme } = useTheme();
-  const currentTheme = resolvedTheme || "light";
-  console.log("IconPicker", open);
+  const currentTheme = (resolvedTheme || Theme.LIGHT) as keyof typeof themeMap;
 
-  function handleSelection(data: any) {
-    console.log("🔴🔴🔴", data);
-    // onChange(data.emoji)
-  }
+  const themeMap = {
+    dark: Theme.DARK,
+    light: Theme.LIGHT,
+  };
+
+  const theme = themeMap[currentTheme];
+  console.log("IconPicker", open);
 
   return (
     <Popover
@@ -47,8 +49,8 @@ export const IconPicker = ({
       modal={true}
     >
       <PopoverTrigger
-      // className={className}
-      // asChild={asChild}
+        className={className}
+        asChild={asChild}
       >
         {children}
       </PopoverTrigger>
@@ -58,7 +60,7 @@ export const IconPicker = ({
         // collisionBoundary={20}
         side={"right"}
         className={cn(
-          "z-[9999999] h-1/3 w-full border-none p-0 shadow-none",
+          "z-[99999] h-1/3 w-full border-none p-0 shadow-none",
           CO_POPUP_MENU_SHADOW(),
         )}
       >
@@ -70,23 +72,20 @@ export const IconPicker = ({
             X
           </span>
         </PopoverClose>
-        {/* <Picker
-          data={data}
-          onEmojiSelect={console.log}
-          autofocus={true}
-          theme={currentTheme}
-          onEmojiClick={handleSelection}
-        /> */}
-        <div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-          <div>fjkashfjkHJKFHJKLhsaf</div>
-        </div>
+        <EmojiPicker
+          // height={400}
+          height={400}
+          width={400}
+          autoFocusSearch={true}
+          className="text-sm"
+          // previewConfig={{
+          //   defaultEmoji: "string",
+          //   defaultCaption: "string;",
+          //   showPreview: true,
+          // }}
+          theme={theme}
+          onEmojiClick={(data) => onChange(data.emoji)}
+        />
       </PopoverContent>
     </Popover>
   );

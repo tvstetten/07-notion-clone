@@ -18,15 +18,18 @@ import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CO_POPUP_MENU_SHADOW } from "@/lib/utils";
+import { useSidebarContext } from "@/components/mylib/sidebar";
 
 interface MenuProps {
   documentId: Id<"documents">;
 }
 
 export const documentMenuContent = (documentId: Id<"documents">) => {
-  const { user } = useUser();
+  // const { user } = useUser();
+  // ?.fullName
+  const user = "<unknown>";
 
-  // console.log("documentMenuContent: documentId:", documentId);
+  console.log("documentMenuContent: documentId:", documentId);
 
   const onArchive = () => {
     console.log("documentMenuContent.onArchive: documentId:", documentId);
@@ -57,15 +60,16 @@ export const documentMenuContent = (documentId: Id<"documents">) => {
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <div className="p-2 text-xs text-muted-foreground">
-        Last edited by: {user?.fullName}
+        Last edited by: {user}
       </div>
     </DropdownMenuContent>
   );
 };
 
-export const Menu = ({ documentId }: MenuProps) => {
+export const DocumentMenuButton = ({ documentId }: MenuProps) => {
+  const lockOpenState = useSidebarContext().lockOpenState;
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={(open) => lockOpenState(open)}>
       <DropdownMenuTrigger asChild>
         <Button
           size="sm"
@@ -79,6 +83,6 @@ export const Menu = ({ documentId }: MenuProps) => {
   );
 };
 
-Menu.Skeleton = function MenuSkeleton() {
+DocumentMenuButton.Skeleton = function MenuSkeleton() {
   return <Skeleton className="h-10 w-10" />;
 };

@@ -3,11 +3,11 @@
 import { useMutation, useQuery } from "convex/react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { FileIcon, Plus } from "lucide-react";
+// import { FileIcon, Plus } from "lucide-react";
+import { FileText, Plus } from "lucide-react";
 
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
-import { cn } from "@/lib/utils";
 
 import { NavItemDocument } from "./nav-item-document";
 import { NavItem } from "./nav-item";
@@ -81,7 +81,10 @@ export const DocumentList = ({
           label="<No pages inside!>"
           className="cursor-default"
         />
-        <NavItem.Button icon={Plus} onClick={onCreate}/>
+        <NavItem.Button
+          icon={Plus}
+          onClick={onCreate}
+        />
       </NavItem>
     );
   }
@@ -91,10 +94,10 @@ export const DocumentList = ({
       {documents?.map((document) => (
         <div key={document._id}>
           <NavItemDocument
-            documentId={document._id}
+            document={document}
             onClick={() => onRedirect(document._id)}
             label={document.title}
-            icon={document.icon || FileIcon}
+            icon={document.icon || FileText}
             active={params.documentId === document._id}
             level={level}
             onExpand={() => onExpand(document._id)}

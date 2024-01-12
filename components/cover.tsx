@@ -18,15 +18,13 @@ interface CoverImageProps {
   preview?: boolean;
 }
 
-export const Cover = ({
-  url,
-  preview,
-}: CoverImageProps) => {
+export const Cover = ({ url, preview }: CoverImageProps) => {
   const { edgestore } = useEdgeStore();
   const params = useParams();
   const coverImage = useCoverImage();
   const removeCoverImage = useMutation(api.documents.removeCoverImage);
 
+  console.log("Cover", url, preview);
   const onRemove = async () => {
     // // 1. remove the image from the external store
     // if (url) {
@@ -38,52 +36,56 @@ export const Cover = ({
 
     // 2. remove the image-link from database
     removeCoverImage({
-      id: params.documentId as Id<"documents">
+      id: params.documentId as Id<"documents">,
     });
   };
 
   return (
-    <div className={cn(
-      "relative w-full h-[35vh] group",
-      !url && "h-[12vh]",
-      url && "bg-muted"
-    )}>
+    <div
+      className={cn(
+        "group relative h-[35vh] w-full",
+        !url && "h-[12vh]",
+        url && "bg-muted",
+      )}
+    >
       {!!url && (
-        <Image
-          src={url}
-          fill
-          alt="Cover"
-          className="object-cover"
-        />
+        <>
+          ++
+          <Image
+            src={url}
+            fill
+            alt="Cover"
+            className="object-cover"
+          />
+          --
+        </>
       )}
       {url && !preview && (
-        <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
+        <div className="absolute bottom-5 right-5 flex items-center gap-x-2 opacity-0 group-hover:opacity-100">
           <Button
             onClick={() => coverImage.onReplace(url)}
-            className="text-muted-foreground text-xs"
+            className="text-xs text-muted-foreground"
             variant="outline"
             size="sm"
           >
-            <ImageIcon className="h-4 w-4 mr-2" />
+            <ImageIcon className="mr-2 h-4 w-4" />
             Change cover
           </Button>
           <Button
             onClick={onRemove}
-            className="text-muted-foreground text-xs"
+            className="text-xs text-muted-foreground"
             variant="outline"
             size="sm"
           >
-            <X className="h-4 w-4 mr-2" />
+            <X className="mr-2 h-4 w-4" />
             Remove
           </Button>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 Cover.Skeleton = function CoverSkeleton() {
-  return (
-    <Skeleton className="w-full h-[12vh]" />
-  )
-}
+  return <Skeleton className="h-[12vh] w-full" />;
+};

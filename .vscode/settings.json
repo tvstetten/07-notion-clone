@@ -5,6 +5,7 @@
     "Autosize",
     "edgestore",
     "esnext",
+    "extralight",
     "Jotion",
     "lucide",
     "sonner",
@@ -12,5 +13,7 @@
   ],
   "editor.indentSize": 2,
   "editor.detectIndentation": false,
-  "editor.wordWrap": "on"
+  "editor.wordWrap": "on",
+  "javascript.format.enable": false,
+  "typescript.format.enable": false
 }

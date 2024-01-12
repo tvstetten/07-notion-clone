@@ -8,7 +8,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { MenuIcon } from "lucide-react";
 import { Title } from "./title";
 import { Banner } from "./banner";
-import { Menu } from "./document-menu";
+import { DocumentMenuButton } from "./document-menu";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -50,7 +50,7 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
         <Title initialData={document} />
         <div className="flex items-center gap-x-2">
           {/* <Publish initialData={document} /> */}
-          <Menu documentId={document._id} />
+          <DocumentMenuButton documentId={document._id} />
         </div>
       </div>
       {document.isArchived && <Banner documentId={document._id} />}

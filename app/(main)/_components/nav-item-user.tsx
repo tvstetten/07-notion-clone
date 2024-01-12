@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsLeft, ChevronsLeftRight, User2 } from "lucide-react";
+import { ChevronsLeft, ChevronsUpDown, Settings, User2 } from "lucide-react";
 import { useUser, SignOutButton } from "@clerk/clerk-react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -8,15 +8,16 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { NavItem, navigationEntryBaseClassnames } from "./nav-item";
+import { NavItem } from "./nav-item";
 import { CO_POPUP_MENU_SHADOW, cn } from "@/lib/utils";
+import { useSidebarContext } from "@/components/mylib/sidebar";
 
 export const NavItemUser = () => {
   const { user } = useUser();
+  const lockOpenState = useSidebarContext().lockOpenState;
 
   return (
     <NavItem
@@ -24,39 +25,62 @@ export const NavItemUser = () => {
       selectable={true}
       active={false}
       onClick={undefined}
-      className="gl-0 -ml-0 pl-0"
+      className="mb-2 text-treeSelected-foreground"
+      height={32}
+      // className="ml-0 gap-x-0 pl-0 pr-2"
     >
-      <DropdownMenu>
+      <DropdownMenu onOpenChange={(open) => lockOpenState(open)}>
         <DropdownMenuTrigger
           className={cn(
-            navigationEntryBaseClassnames(28),
-            "items-center justify-start text-start outline-none",
+            "w-full min-w-0",
+            "outline-none",
+            "group shrink border-0 border-transparent",
+            "flex flex-row content-start items-center justify-start rounded-sm align-baseline text-sm",
+            "my-0.5 gap-1 py-[2px] pl-[1px] pr-[3px]",
           )}
         >
           <>
             {/* Avatar-image */}
-            <NavItem.Button
+            <NavItem.Icon
               icon={user?.imageUrl || User2}
-              size={30}
+              size={28}
               className="rounded-full text-treeSelected-foreground"
             />
-            {/* User-name */}
-            <NavItem.Label
-              label={`${user?.fullName || user?.emailAddresses[0]}'s Jotion`}
-              className="flex-initial text-treeSelected-foreground"
-            ></NavItem.Label>
 
-            {/* Image to show that there is a drop-down */}
-            <ChevronsLeftRight className="h-4 w-4 shrink-0 rotate-90 text-treeButton-foreground" />
+            <div className="flex flex-row content-start justify-start gap-1 truncate align-baseline">
+              {/* User-name */}
+              <NavItem.Label
+                label={`${user?.fullName || user?.emailAddresses[0]}'s Jotion`}
+                // className="text-treeSelected-foreground"
+                // className="place-self-start"
+              />
+
+              {/* Image to show that there is a drop-down */}
+              <NavItem.Icon
+                icon={ChevronsUpDown}
+                size={20}
+                // className="text-treeButton-foreground"
+                className="shrink-0 grow-0"
+              />
+            </div>
+            {/* <NavItem.Icon
+              icon={Settings}
+              size={20}
+              // className="text-treeButton-foreground"
+              className="shrink-0 grow-0"
+            />
 
             {/* Navbar-collapse button (on the right) */}
-            <NavItem.GroupAlignRight className="group-hover/sidebar:inline-flex">
-              <NavItem.Button
-                icon={ChevronsLeft}
-                size={28}
-                clickable={true}
-              />
-            </NavItem.GroupAlignRight>
+            {/* <NavItem.GroupAlignRight
+              onlyHover={true}
+              className="group-hover/sidebar:inline-flex"
+            > */}
+            {/*<NavItem.Button
+              icon={ChevronsLeft}
+              size={28}
+              clickable={true}
+            /> */}
+            {/* </NavItem.GroupAlignRight> */}
           </>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -93,6 +117,26 @@ export const NavItemUser = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <NavItem.Button
+        icon={Settings}
+        size={20}
+        clickable={true}
+        // className="text-treeButton-foreground"
+        className="shrink-0 grow-0"
+      />
+
+      {/* Navbar-collapse button (on the right) */}
+      {/* <NavItem.GroupAlignRight
+              onlyHover={true}
+              className="group-hover/sidebar:inline-flex"
+            > */}
+      <NavItem.Button
+        icon={ChevronsLeft}
+        size={26}
+        clickable={true}
+        className="group-hover/sidebar:inline-flex"
+      />
     </NavItem>
   );
 };
