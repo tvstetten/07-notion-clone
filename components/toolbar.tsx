@@ -82,6 +82,7 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
               className="text-6xl transition hover:opacity-75"
             />
           </IconPicker>
+
           <Button
             onClick={onRemoveIcon}
             className="rounded-full text-xs text-muted-foreground opacity-0 transition group-hover/icon:opacity-100"
@@ -93,7 +94,13 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
         </div>
       )}
       {!!initialData.icon && preview && (
-        <p className="pt-6 text-6xl">{initialData.icon}</p>
+        <p className="pt-6 text-6xl">
+          <AnyImage
+            icon={initialData.icon}
+            size={60}
+            className="text-6xl transition hover:opacity-75"
+          />
+        </p>
       )}
       <div className="flex items-center gap-x-1 py-4 opacity-0 group-hover:opacity-100">
         {!initialData.icon && !preview && (

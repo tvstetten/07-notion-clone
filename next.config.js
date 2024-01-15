@@ -15,7 +15,9 @@ const nextConfig = {
         hostname: "img.clerk.com",
         pathname: "**"
       },
+
       {
+        // For the example Favicon.ico
         protocol: "https",
         hostname: "github.com",
         pathname: "**"

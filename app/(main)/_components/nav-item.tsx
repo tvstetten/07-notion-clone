@@ -10,10 +10,21 @@ export interface NavItemProps {
   active?: boolean;
   selectable?: boolean;
   height?: number;
+  documentId?: any;
   onClick?: () => void;
   onEnter?: (event?: React.MouseEvent<HTMLElement>) => void;
   onLeave?: (event?: React.MouseEvent<HTMLElement>) => void;
   className?: string;
+  children?: React.ReactNode;
+}
+
+export interface NavItemSimpleProps {
+  icon?: LucideIcon | string;
+  iconSize?: number;
+  label: string;
+  active?: boolean;
+  selectable?: boolean;
+  onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
   children?: React.ReactNode;
 }
 
@@ -24,8 +35,6 @@ export interface NavItemBaseProps {
 }
 
 export interface NavItemButtonProps extends NavItemBaseProps {
-  active?: boolean;
-  onlyHover?: boolean;
   clickable?: boolean;
   onClick?: boolean | ((event?: React.MouseEvent<HTMLElement>) => void);
 }
@@ -37,6 +46,7 @@ export const NavItem = ({
   active,
   selectable,
   height = 26,
+  documentId,
   onClick,
   onEnter,
   onLeave,
@@ -45,6 +55,8 @@ export const NavItem = ({
 }: NavItemProps) => {
   return (
     <div
+      id="nav-item"
+      data-doc-id={documentId}
       onClick={onClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
@@ -55,7 +67,7 @@ export const NavItem = ({
         height: `${height}px`,
       }}
       className={cn(
-        "group my-0.5 gap-1 border-0 border-transparent py-[2px]",
+        "group my-0.5 gap-1 py-[2px]",
         "flex flex-row content-start items-center justify-start rounded-sm align-baseline text-sm",
         selectable &&
           "cursor-pointer hover:bg-treeHover hover:text-treeHover-foreground",
@@ -72,21 +84,13 @@ export const NavItem = ({
 
 export const NavItemSimple = ({
   icon,
-  iconSize = 20,
+  iconSize = NAV_ITEM_IMAGE_SIZE,
   label,
   active,
   selectable = true,
   onClick,
   children,
-}: {
-  icon?: LucideIcon | string;
-  iconSize?: number;
-  label: string;
-  active?: boolean;
-  selectable?: boolean;
-  onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
-  children?: React.ReactNode;
-}) => {
+}: NavItemSimpleProps) => {
   return (
     <NavItem
       level={0}
@@ -98,8 +102,6 @@ export const NavItemSimple = ({
         <NavItem.Icon
           icon={icon}
           size={iconSize}
-          // active={active}
-          // clickable={false}
         />
       )}
       <NavItem.Label label={label} />
@@ -109,18 +111,15 @@ export const NavItemSimple = ({
 };
 
 NavItem.Chevron = ({
-  active,
   onClick,
   expanded,
 }: {
-  active?: boolean;
   expanded?: boolean;
   onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
 }) => {
   return (
     <NavItem.Button
       icon={ChevronRight}
-      active={active}
       onClick={onClick}
       className={`duration-490 ease transform rotate-${expanded ? 90 : 0}`}
     />
@@ -141,7 +140,7 @@ NavItem.Label = ({
     <span
       style={style || {}}
       className={cn(
-        "flex-auto break-inside-avoid truncate text-left",
+        "w-full flex-auto break-inside-avoid truncate text-left",
         className,
       )}
     >
@@ -159,29 +158,25 @@ NavItem.Icon = ({
     <AnyImage
       icon={icon}
       size={size}
-      className={className}
+      // define text-size for the Emojis
+      className={cn("shrink-0 grow-0 text-sm ", className)}
     />
   );
 };
 
-// Wrapper for the Icon: LucidIcon
 NavItem.Button = ({
   icon,
   size = 16,
   className,
-  active = false,
-  onlyHover,
   clickable,
   onClick,
 }: NavItemButtonProps) => {
   return (
     <div
       role={!!onClick ? "button" : "label"}
+      style={{ height: size, width: size }}
       className={cn(
-        // `rounded-sm size-[] w-[${size}px] h-[${size}px] min-w-[${size}px] max-w-[${size}px] min-h-[${size}px] max-h-[${size}px]`,
-        // " flex-shrink-0 flex-grow-0 items-center",
-        `rounded-sm size-[${size}px] `,
-        "border-0 text-treeButton-foreground",
+        "g-0 m-0 shrink-0 grow-0 select-none items-center rounded-sm border-0 border-transparent p-0 text-center text-treeButton-foreground",
         (clickable || !!onClick) &&
           "hover:bg-treeButtonHover hover:text-treeButtonHover-foreground",
       )}
@@ -210,244 +205,24 @@ NavItem.Keyboard = ({ keyboard }: { keyboard: string }) => {
   // </kbd>
 };
 
-NavItem.GroupAlignRight = ({
-  onlyHover,
-  className,
-  children,
-}: {
-  onlyHover?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-}) => {
-  return (
-    <div
-      className={cn(
-        "ml-auto items-center gap-x-1",
-        onlyHover ? "hidden group-hover:inline-flex" : "inline-flex",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-};
-
-// export interface NavItemButtonDynamikProps extends NavItemBaseProps {
-//   handleOpenChanged(
-//     isOpen: boolean,
-//     setIsOpen: (isOpen: boolean) => void,
-//     buttonProps: NavItemBaseProps,
-//     insertButtonHere: () => ReactNode,
-//   ): ReactNode;
-// }
-
-// export interface NavItemButtonDropdownCallbackProps {
-//   handleOpenChanged(isOpen: boolean): ReactNode | undefined;
-// }
-
-// export interface NavItemButtonDropdownProps extends NavItemBaseProps {
-//   handleOpenChanged(isOpen: boolean): ReactNode | undefined;
-// }
-
-// {icon && typeof icon === "object" ? (
-//   // Need a separate function to convert to an <Icon>
-//   <ButtonIcon
-//     icon={icon}
-//     className={imageSizeAndClassName}
-//   />
-// ) : typeof icon === "string" ? (
-//   icon.length < 5 ? (
-//     // Character-Emoji
-//     <span
+// NavItem.GroupAlignRight = ({
+//   onlyHover,
+//   className,
+//   children,
+// }: {
+//   onlyHover?: boolean;
+//   className?: string;
+//   children?: React.ReactNode;
+// }) => {
+//   return (
+//     <div
 //       className={cn(
-//         imageSizeAndClassName,
-//         "flex-auto break-inside-avoid truncate text-start",
+//         "ml-auto items-center gap-x-1",
+//         onlyHover ? "hidden group-hover:inline-flex" : "inline-flex",
+//         className,
 //       )}
 //     >
-//       {icon}
-//     </span>
-//   ) : (
-//     // A "real" image
-//     <Image
-//       src={icon}
-//       alt=""
-//       height={size}
-//       width={size}
-//       className={className}
-//     />
-//   )
-// ) : (
-//   ""
-// )}
-
-// NavItem.ButtonDynamic = (buttonProps?: NavItemButtonDynamikProps) => {
-//   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-//   // Function that builds the button itself. used if
-//   //  dropdown is on and also if it's off
-//   const insertButton = () => {
-//     return (
-//       <NavItem.Button
-//         {...buttonProps}
-//         onClick={() => setIsOpen(!isOpen)}
-//       />
-//     );
-//   };
-
-//   console.log("NavItem.ButtonDynamic: isOpen", isOpen);
-//   if (isOpen) {
-//     // special handler if isOpen
-//     return buttonProps?.handleOpenChanged(
-//       isOpen,
-//       setIsOpen,
-//       buttonProps,
-//       insertButton,
-//     );
-//   } else {
-//     // Only the button if not open
-//     return insertButton();
-//   }
-// };
-
-// NavItem.ButtonDropdown = ({
-//   icon,
-//   active,
-//   onlyHover,
-//   className,
-//   handleOpenChanged,
-// }: NavItemButtonDropdownProps) => {
-//   // const [isOpen, setIsOpen] = useState<boolean>(false);
-//   const [buttonState, setButtonState] = useState<number>(0);
-//   const sbContext = useSidebarContext();
-
-//   // Function that builds the button itself. Used if
-//   //  dropdown is on and also if it's off
-//   const menuButton = () => {
-//     // if (isOpen) console.log("menuButton()");
-
-//     return (
-//       <>
-//         <NavItem.Button
-//           icon={icon}
-//           active={active}
-//           onlyHover={onlyHover && buttonState < 2}
-//           className={className}
-//           onClick={() => {
-//             setButtonState(2);
-//             console.log("ButtonDropdown.OnClick");
-//           }}
-//           onEnter={() => {
-//             if (buttonState === 0) {
-//               setButtonState(1);
-//             }
-//             // console.log("ButtonDropdown.OnEnter");
-//           }}
-//           onLeave={() => {
-//             if (buttonState === 1) {
-//               setButtonState(0);
-//             }
-//             // console.log("ButtonDropdown.OnLeave");
-//           }}
-//         />
-//         {handleOpenChanged(buttonState > 1)}
-//       </>
-//     );
-//   };
-
-//   console.log("DropdownMenu: buttonState:", buttonState);
-//   return (
-//     <>
-//       {buttonState ? (
-//         <DropdownMenu
-//           // defaultOpen={true}
-//           // open={true}
-//           onOpenChange={(open) => {
-//             console.log("DropdownMenu.onOpenChange", open);
-//             sbContext.lockOpenState(open);
-//             if (!open) setButtonState(0);
-//             // open || setIsOpen(false);
-//           }}
-//         >
-//           <DropdownMenuTrigger className={"inline-flex max-h-[25] gap-1"}>
-//             {menuButton()}
-//           </DropdownMenuTrigger>
-//           {/* className="h-0 max-h-4 w-0 max-w-0" /> */}
-//         </DropdownMenu>
-//       ) : (
-//         menuButton()
-//       )}
-//     </>
+//       {children}
+//     </div>
 //   );
 // };
-
-// NavItem.ButtonDropdown = ({
-//   icon,
-//   active,
-//   onlyHover,
-//   className,
-//   handleOpenChanged,
-// }: NavItemButtonDropdownProps) => {
-//   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-//   // Function that builds the button itself. Used if
-//   //  dropdown is on and also if it's off
-//   const menuButton = () => {
-//     if (isOpen) console.log("menuButton()");
-
-//     return (
-//       <>
-//         <NavItem.Button
-//           icon={icon}
-//           active={active}
-//           onlyHover={onlyHover && !isOpen}
-//           className={className}
-//           onClick={() => setIsOpen(!isOpen)}
-//           onEnter={() => console.log("ButtonDropdown.OnEnter")}
-//           onLeave={() => console.log("ButtonDropdown.OnLeave")}
-//         />
-//         {handleOpenChanged(isOpen)}
-//       </>
-//     );
-//   };
-
-//   console.log("DropdownMenu: active", active, onlyHover);
-//   return (
-//     <>
-//       {isOpen ? (
-//         <DropdownMenu
-//           defaultOpen={true}
-//           // open={true}
-//           onOpenChange={(open) => {
-//             console.log("DropdownMenu.onOpenChange", open);
-//             open || setIsOpen(false);
-//           }}
-//         >
-//           <DropdownMenuTrigger className={"inline-flex max-h-[25] gap-1"}>
-//             {menuButton()}
-//           </DropdownMenuTrigger>
-//           {/* className="h-0 max-h-4 w-0 max-w-0" /> */}
-//         </DropdownMenu>
-//       ) : (
-//         menuButton()
-//       )}
-//     </>
-//   );
-// };
-
-// {isOpen ? (
-//   <DropdownMenu
-//     defaultOpen={true}
-//     // open={true}
-//     onOpenChange={(open) => {
-//       console.log("DropdownMenu.onOpenChange", open);
-//       open || setIsOpen(false);
-//     }}
-//   >
-//     <DropdownMenuTrigger className={"inline-flex max-h-[25] gap-1"}>
-//       {menuButton()}
-//     </DropdownMenuTrigger>
-//     {/* className="h-0 max-h-4 w-0 max-w-0" /> */}
-//   </DropdownMenu>
-// ) : (
-//   menuButton()
-// )}

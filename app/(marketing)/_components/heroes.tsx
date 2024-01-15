@@ -20,12 +20,14 @@ const HeroesImage = function (props: BigImageProps) {
       <Image
         src={props.src}
         fill
+        sizes=""
         className="object-contain dark:block"
         alt={props.alt}
       />
       <Image
         src={props.src_dark || props.src}
         fill
+        sizes=""
         className="hidden object-contain dark:block"
         alt={props.alt}
       />

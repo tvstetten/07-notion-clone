@@ -25,11 +25,9 @@ interface MenuProps {
 }
 
 export const documentMenuContent = (documentId: Id<"documents">) => {
-  // const { user } = useUser();
-  // ?.fullName
   const user = "<unknown>";
 
-  console.log("documentMenuContent: documentId:", documentId);
+  // console.log("documentMenuContent: documentId:", documentId);
 
   const onArchive = () => {
     console.log("documentMenuContent.onArchive: documentId:", documentId);

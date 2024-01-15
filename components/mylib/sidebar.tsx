@@ -86,7 +86,6 @@ export function createSidebarProps(
   propsDefaults: Partial<SidebarPropsProperties> = {} as SidebarPropsProperties,
   storeDefaults: Partial<SidebarStore> = {} as SidebarStore,
 ) {
-  console.log("createSidebarProps() called");
   // Create the final properties
   const sbProps = createCrossRefProps<SidebarProps, SidebarStore>(
     {
@@ -141,9 +140,6 @@ export function createSidebarProps(
       useOpenState: () => sbProps.useStore((state) => state.openState),
       getOpenState: () => sbProps.useStore.getState().openState,
       setOpenState: (newValue: TOpenState, context: String) => {
-        // if (context && context.includes('!!!'))
-        //   console.log('setOpenState', context, 'is', sbProps.getOpenState(), 'new', newValue)
-
         if (
           newValue === OpenState.Locked &&
           sbProps.useStore.getState().isMobile

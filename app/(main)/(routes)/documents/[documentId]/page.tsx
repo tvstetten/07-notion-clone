@@ -49,9 +49,9 @@ const DocumentIdPage = ({ params }: DocumentIdProps) => {
   };
 
   return (
-    <div className="flex-auto pb-40">
+    <div className="flex-auto border-2 border-blue-500 bg-lime-300 pb-40">
       <Cover url={document.coverImage} />
-      <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
+      <div className="mx-auto bg-indigo-500 md:max-w-3xl lg:max-w-4xl">
         <Toolbar initialData={document} />
         <Editor
           onChange={onChange}

@@ -45,6 +45,9 @@ export const NavItemDocument = ({
   onClick,
   onExpand,
 }: ItemProps) => {
+  // todo: return to boolean
+  //  !const [navItemHovered, setNavItemHovered] = useState<boolean>(false);
+  const [navItemHovered, setNavItemHovered] = useState<string>("");
   const sbStatus = useSidebarContext();
 
   const documentId = document._id;
@@ -54,8 +57,8 @@ export const NavItemDocument = ({
       ...(where || [""]),
       "did",
       documentId,
-      // "nih",
-      // navItemHovered,
+      "nih",
+      navItemHovered,
       "GIS",
       GlobalItemStatus,
     ]);
@@ -67,19 +70,19 @@ export const NavItemDocument = ({
   //  when another item is selected and this element didn't catch the MouseLeave-event
   function ResetStatusCallback() {
     return;
-    // if (
-    //   GlobalItemStatus.hovered === documentId &&
-    //   GlobalItemStatus.popupOpen === ""
-    // ) {
-    //   cl("🟢 RSC true");
-    //   GlobalItemStatus.hovered = "";
-    //   GlobalItemStatus.popupOpen = "";
-    //   GlobalItemStatus.callback = undefined;
-    //   setNavItemHovered(""); // Force repaint
-    //   // if (navItemHovered) setNavItemHovered(""); // Force repaint
-    // } else {
-    //   cl("🟠 RSC false");
-    // }
+    if (
+      GlobalItemStatus.hovered === documentId &&
+      GlobalItemStatus.popupOpen === ""
+    ) {
+      cl("🟢 RSC true");
+      GlobalItemStatus.hovered = "";
+      GlobalItemStatus.popupOpen = "";
+      GlobalItemStatus.callback = undefined;
+      setNavItemHovered(""); // Force repaint
+      // if (navItemHovered) setNavItemHovered(""); // Force repaint
+    } else {
+      cl("🟠 RSC false");
+    }
   }
 
   function handlePopupOpenChange(open: boolean) {
@@ -110,18 +113,29 @@ export const NavItemDocument = ({
     }
 
     return (
-      <IconPicker
-        onChange={handleIconSelect}
-        // onOpenChange={handlePopupOpenChange}
-        //open={GlobalItemStatus.popupOpen === documentId}
-        title="Document Icon"
-      >
-        <NavItem.Icon
-          icon={Icon}
-          size={NAV_ITEM_IMAGE_SIZE}
-          // clickable={false} // activate hover
-        />
-      </IconPicker>
+      <>
+        {true || navItemHovered ? (
+          <IconPicker
+            onChange={handleIconSelect}
+            onOpenChange={handlePopupOpenChange}
+            // className="" //inline-flex h-0 w-0"
+            //open={GlobalItemStatus.popupOpen === documentId}
+            title="Document Icon"
+          >
+            <NavItem.Button
+              icon={Icon}
+              size={NAV_ITEM_IMAGE_SIZE}
+              clickable={true} // activate hover
+            />
+          </IconPicker>
+        ) : (
+          <NavItem.Button
+            icon={Icon}
+            size={NAV_ITEM_IMAGE_SIZE}
+            clickable={true}
+          />
+        )}
+      </>
     );
   }
 
@@ -176,6 +190,7 @@ export const NavItemDocument = ({
   }
 
   function PageMenuButton() {
+    // <DropdownMenuTrigger className={"inline-flex"}>
     return (
       <DropdownMenu onOpenChange={handlePopupOpenChange}>
         <DropdownMenuTrigger asChild={false}>
@@ -274,8 +289,14 @@ export const NavItemDocument = ({
       <PageIcon />
       <PageLabel />
 
-      <PageMenuButton />
-      <PageAddNew />
+      {/* Buttons on the right side only on hover */}
+      {true ||
+        (GlobalItemStatus.hovered === documentId! && (
+          <>
+            <PageMenuButton />
+            <PageAddNew />
+          </>
+        ))}
     </NavItem>
   );
 };

@@ -1,8 +1,15 @@
 ## Getting Started
 
 1. Development server:
+
 ```bash
 npx run dev
+```
+
+or
+
+```bash
+bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -10,8 +17,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### AND
 
 2. Convex server
+
 ```bash
 npx convex dev
 ```
 
+or
 
+```bash
+bunx convex dev
+```
