@@ -62,7 +62,7 @@ export const NavItem = ({
       onMouseLeave={onLeave}
       role={selectable ? "button" : "label"}
       style={{
-        paddingLeft: level ? `${level * 24 + 0}px` : "3px",
+        paddingLeft: level ? `${level * 24}px` : "3px",
         paddingRight: "3px",
         height: `${height}px`,
       }}

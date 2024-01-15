@@ -40,7 +40,10 @@ export const DocumentList = ({
   });
 
   const onRedirect = (documentId: string) => {
-    // router.push(`/documents/${documentId}`);
+    console.log(params.documentId, documentId);
+    if (params.documentId !== documentId) {
+      router.push(`/documents/${documentId}`);
+    }
   };
 
   const onCreate = () => {

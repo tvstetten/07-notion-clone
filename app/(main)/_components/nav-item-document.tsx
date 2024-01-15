@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { IDocument } from "@/convex/documents";
 import { useMutation } from "convex/react";
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { NAV_ITEM_IMAGE_SIZE, NavItem } from "./nav-item";
@@ -30,13 +30,6 @@ interface ItemProps {
   onClick?: (event?: React.MouseEvent<HTMLElement>) => void;
 }
 
-class NavItemMonitor {
-  hovered: undefined | string = "";
-  popupOpen: undefined | string = "";
-  callback: undefined | (() => void) = undefined;
-}
-// const GlobalItemStatus = new NavItemMonitor();
-
 export const NavItemDocument = ({
   document,
   level = 0,
@@ -46,19 +39,20 @@ export const NavItemDocument = ({
   onExpand,
 }: ItemProps) => {
   const sbStatus = useSidebarContext();
+  const [navItemHovered, setNavItemHovered] = useState(""); // Force repaint
 
   const documentId = document._id;
 
   function cl(...where: any[]) {
-    console.log([
+    console.log(
       ...(where || [""]),
       "did",
       documentId,
-      // "nih",
-      // navItemHovered,
+      "nih",
+      navItemHovered,
       "GIS",
       GlobalItemStatus,
-    ]);
+    );
   }
 
   cl("🎇 Redraw");
@@ -66,35 +60,48 @@ export const NavItemDocument = ({
   // Callback that's set as GlobalItemStatus.callback-value to be able to reset this item
   //  when another item is selected and this element didn't catch the MouseLeave-event
   function ResetStatusCallback() {
-    return;
-    // if (
-    //   GlobalItemStatus.hovered === documentId &&
-    //   GlobalItemStatus.popupOpen === ""
-    // ) {
-    //   cl("🟢 RSC true");
-    //   GlobalItemStatus.hovered = "";
-    //   GlobalItemStatus.popupOpen = "";
-    //   GlobalItemStatus.callback = undefined;
-    //   setNavItemHovered(""); // Force repaint
-    //   // if (navItemHovered) setNavItemHovered(""); // Force repaint
-    // } else {
-    //   cl("🟠 RSC false");
-    // }
+    // return;
+    if (
+      GlobalItemStatus.hovered === documentId &&
+      GlobalItemStatus.popupOpen === ""
+    ) {
+      cl("🟢 RSC true");
+      GlobalItemStatus.hovered = "";
+      GlobalItemStatus.popupOpen = "";
+      GlobalItemStatus.callback = undefined;
+      setNavItemHovered(""); // Force repaint
+      // if (navItemHovered) setNavItemHovered(""); // Force repaint
+    } else {
+      cl("🟠 RSC false");
+    }
   }
 
   function handlePopupOpenChange(open: boolean) {
-    // cl("🤷‍♂️ +handlePopupOpenChange; open =", open);
-    // if (open) {
-    //   GlobalItemStatus.popupOpen = documentId;
-    //   cl("🤷‍♂️ true->handlePopupOpenChange; open =", open);
-    // } else {
-    //   cl("📗 onClose");
-    //   GlobalItemStatus.popupOpen = "";
-    //   // GlobalItemStatus.hovered = "";
-    //   // setNavItemHovered(""); // refresh lead to a new onEnter if applicable
-    // }
-    // sbStatus.lockOpenState(open);
+    cl("🤷‍♂️ +handlePopupOpenChange; open =", open);
+    if (open) {
+      GlobalItemStatus.popupOpen = documentId;
+    } else {
+      GlobalItemStatus.popupOpen = "";
+      // GlobalItemStatus.hovered = "";
+      // setNavItemHovered(""); // refresh lead to a new onEnter if applicable
+    }
+    sbStatus.lockOpenState(open);
     cl("🤷‍♂️ -handlePopupOpenChange; open =", open);
+  }
+
+  function handleOnEnter() {
+    cl("+onEnter");
+    if (GlobalItemStatus.popupOpen) return;
+
+    // clean_up previous item
+    if (GlobalItemStatus.hovered !== documentId) {
+      if (GlobalItemStatus.callback) GlobalItemStatus.callback();
+
+      GlobalItemStatus.hovered = documentId!;
+      GlobalItemStatus.callback = ResetStatusCallback;
+    }
+    navItemHovered || setNavItemHovered(documentId); // Refresh item
+    cl("-onEnter");
   }
 
   function PageIcon() {
@@ -109,19 +116,34 @@ export const NavItemDocument = ({
       // setIsOpen(false);
     }
 
-    return (
-      <IconPicker
-        onChange={handleIconSelect}
-        // onOpenChange={handlePopupOpenChange}
-        //open={GlobalItemStatus.popupOpen === documentId}
-        title="Document Icon"
-      >
-        <NavItem.Icon
+    if (GlobalItemStatus.hovered !== documentId)
+      return (
+        <NavItem.Button
           icon={Icon}
           size={NAV_ITEM_IMAGE_SIZE}
-          // clickable={false} // activate hover
         />
-      </IconPicker>
+      );
+
+    return (
+      <div
+        // !div is needed because otherwise the click is propagated
+        //  to the NavItem that leads to a complete redraw!
+        onClick={(event: React.MouseEvent<HTMLElement>) => {
+          event.stopPropagation();
+        }}
+        style={{ height: NAV_ITEM_IMAGE_SIZE }}
+      >
+        <IconPicker
+          title="Document Icon"
+          onChange={handleIconSelect}
+          onOpenChange={handlePopupOpenChange}
+        >
+          <NavItem.Button
+            icon={Icon}
+            size={NAV_ITEM_IMAGE_SIZE}
+          />
+        </IconPicker>
+      </div>
     );
   }
 
@@ -225,19 +247,7 @@ export const NavItemDocument = ({
       selectable={true}
       active={active}
       onClick={onClick}
-      // onEnter={() => {
-      //   cl("+onEnter");
-      //   if (GlobalItemStatus.popupOpen) return;
-      //   // clean_up previous item
-      //   GlobalItemStatus.hovered !== documentId &&
-      //     GlobalItemStatus.callback &&
-      //     GlobalItemStatus.callback();
-
-      //   GlobalItemStatus.hovered = documentId!;
-      //   GlobalItemStatus.callback = ResetStatusCallback;
-      //   navItemHovered || setNavItemHovered(documentId); // Refresh item
-      //   cl("-onEnter");
-      // }}
+      onEnter={handleOnEnter}
       // onLeave={() => {
       //   // cl("+onLeave");
       //   // ResetStatusCallback();
@@ -274,8 +284,12 @@ export const NavItemDocument = ({
       <PageIcon />
       <PageLabel />
 
-      <PageMenuButton />
-      <PageAddNew />
+      {GlobalItemStatus.hovered === documentId && (
+        <>
+          <PageMenuButton />
+          <PageAddNew />
+        </>
+      )}
     </NavItem>
   );
 };

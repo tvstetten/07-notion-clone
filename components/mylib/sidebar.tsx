@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { MotionConfig, motion } from "framer-motion";
 import React, {
+  HTMLAttributes,
   PointerEvent,
   ReactNode,
   PointerEvent as ReactPointerEvent,
@@ -225,6 +226,7 @@ export const SidebarPage = ({
   sbProps,
   className,
   children,
+  ...props
 }: SidebarPageProps) => {
   const isDragging = sbProps.useIsDragging();
   const openState = sbProps.useOpenState();
@@ -251,6 +253,7 @@ export const SidebarPage = ({
               ? sbProps.mobileAnimationDelay
               : sbProps.animationDelay,
         }}
+        {...props}
       >
         <div
           id="sidebar-page"
@@ -258,8 +261,8 @@ export const SidebarPage = ({
           // click on the background to close in mobile-mode
           onClick={(e: React.MouseEvent<HTMLElement>) => {
             if (
-              sbProps.getIsMobile() &&
               sbProps.openStateLocked === 0 &&
+              sbProps.getIsMobile() &&
               openState !== OpenState.Hidden &&
               !isOverSidebar(e.target as Element)
             ) {
